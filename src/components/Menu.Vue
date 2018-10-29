@@ -11,11 +11,10 @@
 
 <script>
 export default {
-    name: 'Menu',
-}
+  name: "Menu"
+};
 </script>
 
 
 <style scoped>
-
 </style>

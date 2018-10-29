@@ -1,7 +1,12 @@
 <template>
     <div>
-        <h3>Cadastro de produto</h3>
-        <b-form @submit="onSubmit" @reset="onReset">
+        <div v-if="$route.params.id">
+          <router-link to="/Listar">Voltar</router-link>
+          <h3>Alterar produto - {{form.nome}}</h3>
+        </div>
+        <div v-else>
+        </div>
+        <b-form @reset="onReset">
             <b-form-group id="codigo"
                             label="Codigo:"
                             label-for="codigoInput"
@@ -43,15 +48,22 @@
                             placeholder="Enter value">
                             </b-form-input>
             </b-form-group>
-      <b-button type="submit" variant="primary">Submit</b-button>
-      <b-button type="reset" variant="danger">Reset</b-button>
+            <div v-if="!$route.params.id">
+              <b-button type="button"  @click.stop.prevent="cadastrar" variant="primary">Cadastro</b-button>
+            </div>
+            <div v-else>
+              <b-button type="button" @click.stop.prevent="alterar" variant="primary">Alterar</b-button>
+            </div>
+            
+              <b-button type="reset" variant="danger">Reset</b-button>
     </b-form>
     </div>
 </template>
 
 <script>
+import  axios from "axios";
 export default {
-  name: "Cadastro",
+  name: "Formulario",
   data() {
     return {
       form: {
@@ -64,9 +76,35 @@ export default {
   },
 
   methods: {
-    onSubmit: function() {
+    cadastrar: function() {
       event.preventDefault();
-
+      console.log(JSON.stringify(this.form))
+      let axiosConfig = {
+      headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+          "Access-Control-Allow-Origin": "*",
+      }
+    };
+      axios.post('http://localhost:4000/api/produtos',JSON.stringify(this.form), axiosConfig).then(response =>{
+        this.$router.push("/Listar");
+      }).catch(e =>{
+        console.log(e)
+      });
+    },
+    alterar: function() {
+      event.preventDefault();
+      console.log(JSON.stringify(this.form))
+      let axiosConfig = {
+      headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+          "Access-Control-Allow-Origin": "*",
+      }
+    };
+      axios.put('http://localhost:4000/api/produtos/'+this.$route.params.id,JSON.stringify(this.form), axiosConfig).then(response =>{
+        this.$router.push("/Listar");
+      }).catch(e =>{
+        console.log(e)
+      });
     },
     onReset: function() {
       event.preventDefault();
@@ -74,6 +112,23 @@ export default {
       this.form.nome = "";
       this.form.quantidade = "";
       this.form.valor = "";
+    }
+  },
+
+  created() {
+    if(this.$route.params.id){
+    axios
+      .get("http://localhost:4000/api/produtos/"+this.$route.params.id)
+      .then(response => {
+        this.form.id = response.data.id;
+        this.form.codigo = response.data.codigo;
+        this.form.nome = response.data.nome;
+        this.form.quantidade = response.data.quantidade;
+        this.form.valor = response.data.valor;
+      })
+      .catch(e => {
+        console.log(e);
+      });
     }
   }
 };
