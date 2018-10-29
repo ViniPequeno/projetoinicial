@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios  from "../axios/client";
 export default {
   data() {
     return {
@@ -38,14 +38,14 @@ export default {
         for (let i = 0; i < this.selecionados.length; i++) {
           axios
             .delete(
-              "http://localhost:4000/api/produtos/" + this.selecionados[i]
+              "/produtos/" + this.selecionados[i]
             )
             .then(response => {
               if (i == this.selecionados.length - 1) {
                 this.selecionados = [];
                 this.items = [];
                 axios
-                  .get("http://localhost:4000/api/produtos")
+                  .get("/produtos")
                   .then(response => {
                     for (let i = 0; i < response.data.length; i++) {
                       this.items.push({
@@ -68,7 +68,7 @@ export default {
   },
   created() {
     axios
-      .get("http://localhost:4000/api/produtos")
+      .get("/produtos")
       .then(response => {
         for (let i = 0; i < response.data.length; i++) {
           this.items.push({

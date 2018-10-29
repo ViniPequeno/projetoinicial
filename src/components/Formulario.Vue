@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import  axios from "axios";
+import axios  from "../axios/client";
 export default {
   name: "Formulario",
   data() {
@@ -78,33 +78,33 @@ export default {
   methods: {
     cadastrar: function() {
       event.preventDefault();
-      console.log(JSON.stringify(this.form))
-      let axiosConfig = {
-      headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-          "Access-Control-Allow-Origin": "*",
-      }
-    };
-      axios.post('http://localhost:4000/api/produtos',JSON.stringify(this.form), axiosConfig).then(response =>{
-        this.$router.push("/Listar");
-      }).catch(e =>{
-        console.log(e)
-      });
+      console.log(JSON.stringify(this.form));
+      axios
+        .post(
+          "/produtos",
+          JSON.stringify(this.form)
+        )
+        .then(response => {
+          this.$router.push("/Listar");
+        })
+        .catch(e => {
+          console.log(e);
+        });
     },
     alterar: function() {
       event.preventDefault();
-      console.log(JSON.stringify(this.form))
-      let axiosConfig = {
-      headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-          "Access-Control-Allow-Origin": "*",
-      }
-    };
-      axios.put('http://localhost:4000/api/produtos/'+this.$route.params.id,JSON.stringify(this.form), axiosConfig).then(response =>{
-        this.$router.push("/Listar");
-      }).catch(e =>{
-        console.log(e)
-      });
+      console.log(JSON.stringify(this.form));
+      axios
+        .put(
+          "/produtos/" + this.$route.params.id,
+          JSON.stringify(this.form)
+        )
+        .then(response => {
+          this.$router.push("/Listar");
+        })
+        .catch(e => {
+          console.log(e);
+        });
     },
     onReset: function() {
       event.preventDefault();
@@ -116,19 +116,19 @@ export default {
   },
 
   created() {
-    if(this.$route.params.id){
-    axios
-      .get("http://localhost:4000/api/produtos/"+this.$route.params.id)
-      .then(response => {
-        this.form.id = response.data.id;
-        this.form.codigo = response.data.codigo;
-        this.form.nome = response.data.nome;
-        this.form.quantidade = response.data.quantidade;
-        this.form.valor = response.data.valor;
-      })
-      .catch(e => {
-        console.log(e);
-      });
+    if (this.$route.params.id) {
+      axios
+        .get("/produtos/" + this.$route.params.id)
+        .then(response => {
+          this.form.id = response.data.id;
+          this.form.codigo = response.data.codigo;
+          this.form.nome = response.data.nome;
+          this.form.quantidade = response.data.quantidade;
+          this.form.valor = response.data.valor;
+        })
+        .catch(e => {
+          console.log(e);
+        });
     }
   }
 };
